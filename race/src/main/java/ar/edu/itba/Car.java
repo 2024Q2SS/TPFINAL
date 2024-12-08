@@ -1,7 +1,5 @@
 package ar.edu.itba;
 
-import java.util.ArrayList;
-
 public class Car {
     private final double beta;
     private final double a;
@@ -13,6 +11,7 @@ public class Car {
     private Vector2D goal;
     private Vector2D position;
     private Vector2D nextVelocity;
+    private Vector2D tempGoal;
 
     public Car(final double beta, final double a, final double b, final double tau, final double maxSpeed,
             final double radius, final Vector2D position, final Vector2D goal) {
@@ -26,6 +25,7 @@ public class Car {
         this.nextVelocity = Vector2D.ZERO();
         this.position = position;
         this.goal = goal;
+        this.tempGoal = goal;
     }
 
     public double getBeta() {
@@ -88,4 +88,29 @@ public class Car {
         this.nextVelocity = nextVelocity;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Car other = (Car) obj;
+        if (position == null) {
+
+            if (other.position != null)
+                return false;
+        } else if (!position.equals(other.position))
+            return false;
+        return true;
+    }
+
+    public Vector2D getTempGoal() {
+        return tempGoal;
+    }
+
+    public void setTempGoal(Vector2D tempGoal) {
+        this.tempGoal = tempGoal;
+    }
 }
