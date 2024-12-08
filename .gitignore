@@ -1,10 +1,10 @@
 # Compiled class file
 *.class
 
-DM/.classpath
-DM/.project
-DM/.settings/*
-DM/target/*
+race/.classpath
+race/.project
+race/.settings/*
+race/target/*
 
 
 # Log file
