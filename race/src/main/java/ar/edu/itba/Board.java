@@ -231,6 +231,34 @@ public class Board {
         for (Car car : workingCars) {
             car.setVelocity(car.getTempGoal().multiply(car.getMaxSpeed()));
             car.setPosition(car.getPosition().add(car.getVelocity().multiply(dt)));
+            switch (goals.indexOf(car.getGoal())) {
+                case 0:
+                    if (car.getPosition().getX() == 20)
+                        car.setGoal(goals.get(1));
+                    break;
+                case 1:
+                    if (car.getPosition().getY() == 30)
+                        car.setGoal(goals.get(2));
+                    break;
+                case 2:
+                    if (car.getPosition().getX() == 50)
+                        car.setGoal(goals.get(3));
+                    break;
+                case 3:
+                    if (car.getPosition().getY() == 80)
+                        car.setGoal(goals.get(4));
+                    break;
+                case 4:
+                    if (car.getPosition().getX() == 70)
+                        car.setGoal(goals.get(5));
+                    break;
+                case 5:
+                    if (car.getPosition().getY() == 55)
+                        car.setGoal(goals.get(6));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -267,15 +295,14 @@ public class Board {
     }
 
     public Boolean finishConditionsMet() {
-        return false;
         // poner algun caso con steps por las dudas?
-        // if (workingCars.isEmpty())
-        // return true;
-        // for (Car car : workingCars) {
-        // if (car.getPosition().getX() == 100.00)
-        // return true;
-        // }
-        // return false;
+        if (workingCars.isEmpty())
+            return true;
+        for (Car car : workingCars) {
+            if (car.getPosition().getX() == 100)
+                return true;
+        }
+        return false;
     }
 
     public Boolean isInsideTrack(Car particle) {
