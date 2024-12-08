@@ -39,11 +39,14 @@ public class Board {
             spacing = (10 - (2 * config.getRadius()) * M) / (M + 1);
         }
         System.out.println("M=" + M + "\n" + "Spacing=" + spacing);
-        for (int i = 0; i < config.getN(); i++) {
+        int multiplier = 0;
+        for (int i = 1; i <= config.getN(); i++) {
             double x = 0.00;
-            if (i == M)
+            if (i == M) {
                 x = 1.00;
-            position = new Vector2D(x, 45.00 + i * spacing);
+                multiplier = 1;
+            }
+            position = new Vector2D(x, 45.00 + multiplier++ * spacing);
             workingCars
                     .add(new Car(config.getBeta(), config.getA(), config.getB(), config.getTau(),
                             config.getMaxSpeed(),
@@ -56,7 +59,7 @@ public class Board {
         Double spacing = (10 - (2 * config.getRadius()) * config.getN()) / (config.getN() + 1);
         double M = config.getN();
         while (spacing <= 0) {
-            M = Math.ceil(config.getN() / 2);
+            M = Math.ceil(config.getN() / 2.0);
             spacing = (10 - (2 * config.getRadius()) * M) / (M + 1);
         }
         return M;
