@@ -4,10 +4,16 @@ public class Config {
 
     private Integer N;
     private Double step;
+    private Double radius;
 
-    public Config(Integer N, Double step) {
+    public Config(Integer N, Double step, Double radius) {
         this.N = N;
         this.step = step;
+        this.radius = radius;
+    }
+
+    public Double getRadius() {
+        return radius;
     }
 
     @Override
@@ -15,6 +21,7 @@ public class Config {
         return "\nConfig{\n" +
                 "N:" + N + "\n" +
                 "step:" + step + "\n" +
+                "radius:" + radius + "\n" +
                 "}";
     }
 

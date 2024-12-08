@@ -1,5 +1,7 @@
 package ar.edu.itba;
 
+import java.util.Objects;
+
 public class Coordinate {
 
     private Double x;
