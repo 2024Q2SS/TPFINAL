@@ -65,6 +65,84 @@ public class Board {
         return M;
     }
 
+    // 1st iteration
+    public void findCollisions() {
+        for (Car car : workingCars) {
+            double x = car.getPosition().getX();
+            double y = car.getPosition().getY();
+            // wall check
+            switch (goals.indexOf(car.getGoal())) {
+                case 0:
+                    if (y + car.getRadius() >= 55 || y - car.getRadius() <= 45) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 1:
+                    if (x + car.getRadius() >= 30 || x - car.getRadius() <= 20) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 2:
+                    if (y + car.getRadius() >= 30 || y - car.getRadius() <= 20) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 3:
+                    if (x + car.getRadius() >= 60 || x - car.getRadius() <= 50) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 4:
+                    if (y + car.getRadius() >= 90 || y - car.getRadius() <= 80) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 5:
+                    if (x + car.getRadius() >= 80 || x - car.getRadius() <= 70) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                case 6:
+                    if (y + car.getRadius() >= 55 || y - car.getRadius() <= 45) {
+                        workingCars.remove(car);
+                        collidedCars.add(car);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid goal");
+
+            }
+            // car check
+            for (Car other : allCars) {
+                if (car.equals(other))
+                    continue;
+                if (car.getPosition().distance(other.getPosition()) < car.getRadius() + other.getRadius()) {
+                    workingCars.remove(car);
+                    workingCars.remove(other);
+                    collidedCars.add(car);
+                    collidedCars.add(other);
+                }
+            }
+
+        }
+    }
+
+    // 2nd iteration radii adjustment (no, i dont think i will)
+    // 3rd iteration find new directions and magintude
+    public void calculateTargetDirection() {
+    }
+
+    // 4th iteration update SPEED FIRST and position
+    public void updateCars() {
+
+    }
+
     public void run() {
         double time = 0;
         initialize();
@@ -80,6 +158,10 @@ public class Board {
                 for (Car particle : allCars) {
                     csv.println(particle.getPosition().getX() + "," + particle.getPosition().getY());
                 }
+
+                findCollisions();
+                calculateTargetDirection();
+                updateCars();
             }
         } catch (
 
