@@ -27,6 +27,5 @@ public class App {
         App app = new App();
         Board board = new Board(app.setUp());
         board.run();
-
     }
 }

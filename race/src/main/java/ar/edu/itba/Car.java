@@ -13,6 +13,16 @@ public class Car {
     private Vector2D nextVelocity;
     private Vector2D tempGoal;
 
+    private boolean collided = false;
+
+    public boolean isCollided() {
+        return collided;
+    }
+
+    public void setCollided(boolean collided) {
+        this.collided = collided;
+    }
+
     public Car(final double beta, final double a, final double b, final double tau, final double maxSpeed,
             final double radius, final Vector2D position, final Vector2D goal) {
         this.beta = beta;
