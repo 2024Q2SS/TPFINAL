@@ -1,3 +1,5 @@
+import json
+
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,14 +29,22 @@ def setup_course():
         linewidth=2,
     )
 
-    goals = [([20, 20], [55, 45]), ([20, 30], [30, 30]), ([50, 50], [20, 30]), ([50, 60], [80, 80]), ([70, 70], [80, 90]), ([70, 80], [55, 55]), ([100, 100], [55, 45])]
+    goals = [
+        ([20, 20], [55, 45]),
+        ([20, 30], [30, 30]),
+        ([50, 50], [20, 30]),
+        ([50, 60], [80, 80]),
+        ([70, 70], [80, 90]),
+        ([70, 80], [55, 55]),
+        ([100, 100], [55, 45]),
+    ]
     for goal in goals:
         x, y = goal
-        ax.plot(x, y, color="cyan", linewidth=2, linestyle='dashed')
+        ax.plot(x, y, color="cyan", linewidth=2, linestyle="dashed")
     # Optional blue points
     blue_points = [(25, 50), (25, 25), (55, 25), (55, 85), (75, 85), (75, 50)]
     for x, y in blue_points:
-        ax.scatter(x, y, color='cyan', zorder=5)
+        ax.scatter(x, y, color="cyan", zorder=5)
 
     # Start and end markers
     ax.text(0, 49, "A", color="red", fontsize=12)
@@ -73,7 +83,8 @@ def animate_particles(file_path, output_path):
 
     # Create circle objects for each particle
     circles = []
-    for _ in range(10):  # Assuming 10 particles
+    json_file = json.load(open("../config.json"))
+    for _ in range(json_file["N"]):  # Assuming 10 particles
         circle = plt.Circle((0, 0), 0.25, color="blue", zorder=5)
         ax.add_patch(circle)
         circles.append(circle)
@@ -100,3 +111,4 @@ if __name__ == "__main__":
 
     # Call the animation function
     animate_particles(csv_file_path, output_file_path)
+
