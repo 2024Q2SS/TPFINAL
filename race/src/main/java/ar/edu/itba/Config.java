@@ -9,8 +9,9 @@ public class Config {
     private final double beta;
     private final double tau;
     private final double maxSpeed;
+    private final double goalBias;
 
-    public Config(int n, double radius, double a, double b, double beta, double tau, double maxSpeed) {
+    public Config(int n, double radius, double a, double b, double beta, double tau, double maxSpeed, double goalBias) {
         N = n;
         this.radius = radius;
         this.a = a;
@@ -18,6 +19,11 @@ public class Config {
         this.beta = beta;
         this.tau = tau;
         this.maxSpeed = maxSpeed;
+        this.goalBias = goalBias;
+    }
+
+    public double getGoalBias() {
+        return goalBias;
     }
 
     public int getN() {

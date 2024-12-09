@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+json_file = json.load(open("../config.json"))
+N = json_file["N"]
+
 
 # Set up the course
 def setup_course():
@@ -57,7 +60,7 @@ def setup_course():
 def load_data(file_path):
     data = pd.read_csv(file_path)
     particles = []
-    for i in range(10):  # Assuming 10 particles
+    for i in range(N):  # Assuming 10 particles
         particles.append(
             data[["t", f"p{i}x", f"p{i}y", f"c{i}"]].rename(
                 columns={f"p{i}x": "x", f"p{i}y": "y", f"c{i}": "color_flag"}
@@ -83,8 +86,7 @@ def animate_particles(file_path, output_path):
 
     # Create circle objects for each particle
     circles = []
-    json_file = json.load(open("../config.json"))
-    for _ in range(json_file["N"]):  # Assuming 10 particles
+    for _ in range(N):  # Assuming 10 particles
         circle = plt.Circle((0, 0), 0.25, color="blue", zorder=5)
         ax.add_patch(circle)
         circles.append(circle)
@@ -111,4 +113,3 @@ if __name__ == "__main__":
 
     # Call the animation function
     animate_particles(csv_file_path, output_file_path)
-

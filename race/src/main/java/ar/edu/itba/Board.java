@@ -50,21 +50,31 @@ public class Board {
         System.out.println("M=" + M + "\n" + "Spacing=" + spacing);
         double multiplier = spacing;
         int counter = 0;
+        double x = 0.00;
         for (int i = 1; i <= config.getN(); i++) {
-            double x = 0.00;
-            if (i > M) {
-                x = 1.00;
-                multiplier = spacing;
+            if (counter >= M) { // Move to the next column
+                x += 1.00;
                 counter = 0;
+                multiplier = spacing; // Reset multiplier for the new column
             }
-            position = new Vector2D(x,
-                    45.00 + multiplier + config.getRadius() + (counter) * config.getRadius() * 2);
-            multiplier += spacing;
+
+            // Calculate y-position with better balance
+            double y = 45.00 + multiplier + (counter * 2 * config.getRadius()) + config.getRadius();
+
+            if (y > 55.00) {
+                System.err.println("Warning: Car " + i + " exceeds Y limit!");
+                y = 55.00; // Ensure cars don't exceed the upper bound
+            }
+
+            position = new Vector2D(x, y);
+
+            workingCars.add(new Car(
+                    config.getBeta(), config.getA(), config.getB(), config.getTau(),
+                    config.getMaxSpeed(), config.getRadius(), position, goals.get(0)));
+            System.out.println("Added car " + i + " at " + position);
+
+            multiplier += spacing; // Increment the spacing
             counter++;
-            workingCars
-                    .add(new Car(config.getBeta(), config.getA(), config.getB(), config.getTau(),
-                            config.getMaxSpeed(),
-                            config.getRadius(), position, goals.get(0)));
         }
         allCars.addAll(workingCars);
     }
@@ -73,8 +83,9 @@ public class Board {
         Double spacing = (10 - (2 * config.getRadius()) * config.getN()) / (config.getN() + 1);
         double M = config.getN();
         while (spacing <= 0) {
-            M = Math.ceil(config.getN() / 2.0);
+            M = Math.ceil(M / 2.0);
             spacing = (10 - (2 * config.getRadius()) * M) / (M + 1);
+            System.out.println("El valor de M es " + M);
         }
         return M;
     }
@@ -255,9 +266,9 @@ public class Board {
                     continue;
                 sumCollisions = sumCollisions.add(calculateCarCollisionVector(car, other));
             }
-            tempGoal = tempGoal.add(sumCollisions.versor()).versor();
+
+            tempGoal = tempGoal.multiply(config.getGoalBias()).add(sumCollisions.versor()).versor();
             car.setTempGoal(tempGoal);
-            System.out.println("Car " + car.getPosition() + " tempGoal: " + tempGoal + " goal: " + car.getGoal());
         }
 
     }
