@@ -1,6 +1,8 @@
 package ar.edu.itba;
 
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import com.google.gson.Gson;
 
@@ -26,6 +28,17 @@ public class App {
 
         App app = new App();
         Board board = new Board(app.setUp());
-        board.run();
+
+        try (PrintWriter csv = new PrintWriter(new FileWriter("obs_output.csv"))) {
+            csv.println("t, cols_p");
+            for (int i = 0; i < 1; i++) {
+                double time = board.run();
+                csv.println(String.valueOf(time) + "," + String.valueOf(board.collisionPercentage()));
+                board.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
