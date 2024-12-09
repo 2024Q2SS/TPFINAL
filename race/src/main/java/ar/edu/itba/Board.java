@@ -13,6 +13,7 @@ public class Board {
     private List<Vector2D> goals = new ArrayList<>();
     private List<Car> workingCars = new ArrayList<>();
     private List<Car> collidedCars = new ArrayList<>();
+    private List<Car> finishedCars = new ArrayList<>();
     private List<Car> allCars = new ArrayList<>();
     // private List<Collision> collisions = new ArrayList<>();
     private final double dt;
@@ -75,6 +76,9 @@ public class Board {
     // 1st iteration
     public void findCollisions() {
         Set<Car> toRemove = new HashSet<>();
+        List<Car> auxCars = new ArrayList<>();
+        auxCars.addAll(allCars);
+        auxCars.removeAll(finishedCars);
         for (Car car : workingCars) {
             double x = car.getPosition().getX();
             double y = car.getPosition().getY();
@@ -89,42 +93,42 @@ public class Board {
                     }
                     break;
                 case 1:
-                    if (x + car.getRadius() >= 30 || x - car.getRadius() <= 20) {
+                    if (x + car.getRadius() >= 30 || (x - car.getRadius() <= 20 && y - car.getRadius() <= 45)) {
                         System.out.println("Collision with wall, goal 1");
                         toRemove.add(car);
                         car.setCollided(true);
                     }
                     break;
                 case 2:
-                    if (y + car.getRadius() >= 30 || y - car.getRadius() <= 20) {
+                    if ((y + car.getRadius() >= 30 && x + car.getRadius() >= 30) || y - car.getRadius() <= 20) {
                         System.out.println("Collision with wall, goal 2");
                         toRemove.add(car);
                         car.setCollided(true);
                     }
                     break;
                 case 3:
-                    if (x + car.getRadius() >= 60 || x - car.getRadius() <= 50) {
+                    if (x + car.getRadius() >= 60 || (x - car.getRadius() <= 50 && y + car.getRadius() >= 30)) {
                         System.out.println("Collision with wall, goal 3");
                         toRemove.add(car);
                         car.setCollided(true);
                     }
                     break;
                 case 4:
-                    if (y + car.getRadius() >= 90 || y - car.getRadius() <= 80) {
+                    if (y + car.getRadius() >= 90 || (y - car.getRadius() <= 80 && x + car.getRadius() >= 60)) {
                         System.out.println("Collision with wall, goal 4");
                         toRemove.add(car);
                         car.setCollided(true);
                     }
                     break;
                 case 5:
-                    if (x + car.getRadius() >= 80 || x - car.getRadius() <= 70) {
+                    if (x + car.getRadius() >= 80 || (x - car.getRadius() <= 70 && y - car.getRadius() <= 80)) {
                         System.out.println("Collision with wall, goal 5");
                         toRemove.add(car);
                         car.setCollided(true);
                     }
                     break;
                 case 6:
-                    if (y + car.getRadius() >= 55 || y - car.getRadius() <= 45) {
+                    if ((x + car.getRadius() >= 80 && y + car.getRadius() >= 55) || y - car.getRadius() <= 45) {
                         System.out.println("Collision with wall, goal 6");
                         toRemove.add(car);
                         car.setCollided(true);
@@ -135,7 +139,7 @@ public class Board {
 
             }
             // car check
-            for (Car other : allCars) {
+            for (Car other : auxCars) {
                 if (car.equals(other))
                     continue;
                 if (car.getPosition().distance(other.getPosition()) < car.getRadius() + other.getRadius()) {
@@ -235,42 +239,40 @@ public class Board {
             car.setVelocity(car.getTempGoal().multiply(car.getMaxSpeed()));
             car.setPosition(car.getPosition().add(car.getVelocity().multiply(dt)));
             System.out.println("Car position: " + car.getPosition());
-            System.out.println("Car goal: " + car.getGoal() + goals.indexOf(car.getGoal()));
             switch (goals.indexOf(car.getGoal())) {
                 case 0:
-                    if (car.getPosition().getX() - 3 * car.getRadius() > 20) {
+                    if (car.getPosition().getX() - car.getRadius() > 20) {
                         car.setGoal(goals.get(1));
                     }
                     break;
                 case 1:
-                    if (car.getPosition().getY() + 3 * car.getRadius() < 30) {
+                    if (car.getPosition().getY() + car.getRadius() < 30) {
                         car.setGoal(goals.get(2));
                     }
                     break;
                 case 2:
-                    if (car.getPosition().getX() - 3 * car.getRadius() > 50) {
+                    if (car.getPosition().getX() - car.getRadius() > 50) {
                         car.setGoal(goals.get(3));
                     }
                     break;
                 case 3:
-                    if (car.getPosition().getY() - 3 * car.getRadius() > 80) {
+                    if (car.getPosition().getY() - car.getRadius() > 80) {
                         car.setGoal(goals.get(4));
                     }
                     break;
                 case 4:
-                    if (car.getPosition().getX() - 3 * car.getRadius() > 70) {
+                    if (car.getPosition().getX() - car.getRadius() > 70) {
                         car.setGoal(goals.get(5));
                     }
                     break;
                 case 5:
-                    if (car.getPosition().getY() + 3 * car.getRadius() < 55) {
+                    if (car.getPosition().getY() + car.getRadius() < 55) {
                         car.setGoal(goals.get(6));
                     }
                     break;
                 default:
                     break;
             }
-            System.out.println("updated car goal: " + car.getGoal() + goals.indexOf(car.getGoal()));
 
         }
     }
@@ -278,7 +280,7 @@ public class Board {
     public void run() {
         double time = 0;
         int count = 0;
-        int maxRounds = 1000;
+        // int maxRounds = 100000000000;
         initialize();
         StringBuilder builder = new StringBuilder();
         builder.append("t");
@@ -295,7 +297,7 @@ public class Board {
                         + particle.isCollided());
             }
             csv.println(builder.toString());
-            while (!finishConditionsMet() && (count < maxRounds)) {
+            while (!finishConditionsMet() /* && (count < maxRounds) */) {
                 count++;
                 // collisions.clear();
                 if (count % 10 == 0) {
@@ -325,15 +327,16 @@ public class Board {
 
     public Boolean finishConditionsMet() {
         if (workingCars.isEmpty()) {
-            System.out.println("All cars collided");
             return true;
         }
+        Set<Car> toRemove = new HashSet<>();
         for (Car car : workingCars) {
-            if (car.getPosition().getX() == 100) {
-                System.out.println("car got to final destination");
-                return true;
+            if (car.getPosition().getX() + car.getRadius() >= 100) {
+                toRemove.add(car);
             }
         }
+        workingCars.removeAll(toRemove);
+        finishedCars.addAll(toRemove);
         return false;
     }
 
