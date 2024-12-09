@@ -48,7 +48,7 @@ public class Board {
             double x = 0.00;
             if (i > M) {
                 x = 1.00;
-                multiplier = 1;
+                multiplier = spacing;
                 counter = 0;
             }
             position = new Vector2D(x,
@@ -128,10 +128,13 @@ public class Board {
                     }
                     break;
                 case 6:
-                    if ((x + car.getRadius() >= 80 && y + car.getRadius() >= 55) || y - car.getRadius() <= 45) {
-                        System.out.println("Collision with wall, goal 6");
-                        toRemove.add(car);
-                        car.setCollided(true);
+                    // Only check wall collisions when the car is past x=80
+                    if (x + car.getRadius() >= 80) {
+                        if (y + car.getRadius() >= 55 || y - car.getRadius() <= 45) {
+                            System.out.println("Collision with wall, goal 6");
+                            toRemove.add(car);
+                            car.setCollided(true);
+                        }
                     }
                     break;
                 default:
@@ -218,8 +221,18 @@ public class Board {
                     tempGoal = tempGoal.add(calculateWallCollisionVector(car, nearestWall5));
                     break;
                 case 6:
-                    Vector2D nearestWall6 = y >= 50 ? new Vector2D(x, 55)
-                            : new Vector2D(x, 45);
+                    Vector2D nearestWall6;
+                    if (x >= 80) {
+                        // In the final straight section
+                        if (y >= 50) {
+                            nearestWall6 = new Vector2D(x, 55);
+                        } else {
+                            nearestWall6 = new Vector2D(x, 45);
+                        }
+                    } else {
+                        // In the turning section
+                        nearestWall6 = new Vector2D(75, 55);
+                    }
                     tempGoal = tempGoal.add(calculateWallCollisionVector(car, nearestWall6));
                     break;
                 default:
@@ -237,7 +250,6 @@ public class Board {
 
     // 4th iteration update SPEED FIRST and position
     public void updateCars() {
-
         for (Car car : workingCars) {
             car.setVelocity(car.getTempGoal().multiply(car.getMaxSpeed()));
             car.setPosition(car.getPosition().add(car.getVelocity().multiply(dt)));
@@ -268,14 +280,16 @@ public class Board {
                     }
                     break;
                 case 5:
-                    if (car.getPosition().getY() + car.getRadius() * 1.5 < 55) {
+                    if (car.getPosition().getY() + car.getRadius() < 55) {
                         car.setGoal(goals.get(6));
                     }
                     break;
-                default:
+                case 6:
+                    // Keep the same goal - no need to change it
                     break;
+                default:
+                    throw new IllegalArgumentException("Invalid goal index: " + goals.indexOf(car.getGoal()));
             }
-
         }
     }
 
